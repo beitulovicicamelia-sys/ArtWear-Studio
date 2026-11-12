@@ -1,0 +1,16 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "lucrari"
+    label: "Lucrări"
+    folder: "content/lucrari"
+    create: true
+    fields:
+      - {label: "Titlu", name: "title", widget: "string"}
+      - {label: "Imagine", name: "image", widget: "image"}
+      - {label: "Descriere", name: "body", widget: "markdown"}
