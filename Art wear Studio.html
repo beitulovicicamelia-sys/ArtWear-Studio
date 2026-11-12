@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ro" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwear studio by Camelia | Hand-Crafted Cosmic Wearable Art</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            950: '#05060D',
+                            900: '#0A0C1B',
+                            800: '#11152E',
+                            700: '#1C2347',
+                            600: '#273161',
+                        },
+                        starlight: {
+                            gold: '#F5E6AD',
+                            violet: '#C084FC',
+                            cyan: '#00D2FF',
+                            magenta: '#FF2A8D',
+                            glow: '#00FF9D'
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow-pulse': 'glowPulse 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glowPulse: {
+                            '0%': { filter: 'drop-shadow(0 0 5px rgba(0,255,157,0.4))' },
+                            '100%': { filter: 'drop-shadow(0 0 20px rgba(0,255,157,0.9))' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05060D;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .cosmic-glow-bg {
+            background: radial-gradient(circle at 50% 30%, rgba(39, 49, 97, 0.4) 0%, rgba(5, 6, 13, 1) 75%);
+        }
+
+        .card-glass {
+            background: rgba(17, 21, 46, 0.65);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-glass:hover {
+            border-color: rgba(255, 42, 141, 0.4);
+            box-shadow: 0 12px 35px -10px rgba(255, 42, 141, 0.25);
+            transform: translateY(-4px);
+        }
+
+        /* Glow simulation on image */
+        .glow-active {
+            filter: brightness(0.7) contrast(1.4) hue-rotate(90deg) saturate(2);
+            box-shadow: inset 0 0 50px rgba(0, 255, 157, 0.6);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05060D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1C2347;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00D2FF;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-starlight-magenta selection:text-white">
+
+    <!-- Interactive Ambient Canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-space-950/70 border-b border-space-700/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full border border-starlight-cyan/40 flex items-center justify-center bg-space-800/80 group-hover:border-starlight-magenta transition-colors shadow-[0_0_15px_rgba(0,210,255,0.2)]">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-starlight-cyan animate-pulse"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-cinzel text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-starlight-cyan via-starlight-magenta to-starlight-gold">
+                        Artwear studio
+                    </span>
+                    <span class="text-[10px] uppercase tracking-widest text-slate-400 font-light">by Camelia</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-slate-300">
+                <a href="#first-creation" class="hover:text-starlight-glow transition-colors">Prima Creație</a>
+                <a href="#gallery" class="hover:text-starlight-cyan transition-colors">Portofoliu</a>
+                <a href="#tshirts" class="hover:text-starlight-gold transition-colors">Tricouri</a>
+                <a href="#story" class="hover:text-starlight-magenta transition-colors">Povestea Mea</a>
+                <a href="#order" class="hover:text-starlight-gold transition-colors">Comandă Custom</a>
+            </nav>
+
+            <a href="#order" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-starlight-magenta/20 to-starlight-cyan/20 border border-starlight-cyan/40 hover:border-starlight-glow text-starlight-glow hover:shadow-[0_0_20px_rgba(0,255,157,0.3)] transition-all">
+                <span>Creează Haine Custom</span>
+                <i data-lucide="wand-2" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="relative z-10 pt-20">
+
+        <!-- HERO SECTION -->
+        <section class="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden cosmic-glow-bg">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-starlight-magenta/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow"></div>
+            <div class="absolute bottom-1/3 right-1/4 w-96 h-96 bg-starlight-cyan/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-8 py-16">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-starlight-cyan/30 bg-space-800/80 backdrop-blur-md text-xs font-semibold text-starlight-cyan tracking-widest uppercase animate-float">
+                    <i data-lucide="moon" class="w-3.5 h-3.5 text-starlight-glow"></i>
+                    <span>Jachete Denim & Tricouri Heavyweight • Glow in the Dark</span>
+                </div>
+
+                <h1 class="font-cinzel text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-slate-100 leading-tight">
+                    Artwear studio <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-starlight-cyan via-starlight-magenta to-starlight-gold">
+                        by Camelia
+                    </span>
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                    Jachete din blug și tricouri din bumbac plin, pictate manual cu intenție spirituală, galaxii hipnotizante, apusuri calde și detalii ce prind viață la întuneric.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <a href="#gallery" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-starlight-cyan to-starlight-magenta text-space-950 font-bold text-xs tracking-widest uppercase hover:opacity-95 hover:shadow-[0_0_25px_rgba(0,210,255,0.4)] transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="grid" class="w-4 h-4"></i>
+                        <span>Explorează Colecția</span>
+                    </a>
+                    <a href="#order" class="w-full sm:w-auto px-8 py-4 rounded-full border border-space-700 bg-space-800/60 text-slate-200 hover:border-starlight-glow hover:text-starlight-glow transition-all text-xs tracking-widest uppercase font-semibold flex items-center justify-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-starlight-glow"></i>
+                        <span>Comandă Jachetă sau Tricou</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED FIRST CREATION SECTION -->
+        <section id="first-creation" class="py-24 px-6 relative max-w-6xl mx-auto border-t border-space-700/40">
+            <div class="text-center space-y-4 mb-14">
+                <span class="text-xs font-semibold uppercase tracking-widest text-starlight-glow flex items-center justify-center gap-2">
+                    <i data-lucide="award" class="w-4 h-4"></i>
+                    <span>Creația No. 1 • Inaugural Piece</span>
+                </span>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-slate-100">Galaxia Spirală & Scorpio</h2>
+                <p class="text-slate-400 text-sm max-w-xl mx-auto font-light">
+                    Prima mea jachetă pictată vreodată pe denim închis. O nebuloasă profundă obținută prin tehnica buretelui, completată cu pigmenți fosforescenți speciali.
+                </p>
+            </div>
+
+            <div class="card-glass rounded-3xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Image Display Area -->
+                <div class="lg:col-span-7 relative group rounded-2xl overflow-hidden bg-space-950 border border-space-700/60 aspect-[4/5] sm:aspect-[4/3] flex items-center justify-center">
+                    
+                    <!-- Day View Image -->
+                    <img id="heroJacketDay" src="https://lh3.googleusercontent.com/proxy/4uE5TzF_0k_Q" alt="Galaxia Spirală de Camelia" class="w-full h-full object-cover transition-all duration-700">
+
+                    <!-- Glow overlay simulation for Night view -->
+                    <div id="heroGlowOverlay" class="absolute inset-0 bg-space-950/90 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-700">
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            <!-- Highlighting glow dots for stars and Scorpio Constellation -->
+                            <div class="absolute w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-starlight-glow/30 via-transparent to-transparent animate-glow-pulse"></div>
+                            
+                            <!-- Constellation SVG glow overlay -->
+                            <svg class="w-64 h-64 text-starlight-glow animate-glow-pulse relative z-10" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2">
+                                <!-- Scorpio Constellation Lines -->
+                                <polyline points="40,140 70,120 100,110 130,125 160,110 170,80 150,60 130,70 120,90" stroke-dasharray="4,4"/>
+                                <circle cx="40" cy="140" r="4" fill="#00FF9D"/>
+                                <circle cx="70" cy="120" r="3" fill="#00FF9D"/>
+                                <circle cx="100" cy="110" r="5" fill="#00FF9D"/>
+                                <circle cx="130" cy="125" r="3" fill="#00FF9D"/>
+                                <circle cx="160" cy="110" r="4" fill="#00FF9D"/>
+                                <circle cx="170" cy="80" r="3" fill="#00FF9D"/>
+                                <circle cx="150" cy="60" r="3" fill="#00FF9D"/>
+                                <circle cx="130" cy="70" r="3" fill="#00FF9D"/>
+                            </svg>
+                            <p class="absolute bottom-4 font-cinzel text-xs text-starlight-glow tracking-widest uppercase bg-space-950/90 px-4 py-2 rounded-full border border-starlight-glow/50">
+                                ✦ Constelația Scorpio & Stele Luminoase
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Mode Indicator Tag -->
+                    <div class="absolute top-4 left-4 z-20 bg-space-950/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-space-700 text-xs font-semibold flex items-center gap-2">
+                        <span id="heroModeDot" class="w-2.5 h-2.5 rounded-full bg-starlight-cyan"></span>
+                        <span id="heroModeLabel" class="text-slate-200">Modul Zi (Lumină)</span>
+                    </div>
+                </div>
+
+                <!-- Control Panel & Artwork Details -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-starlight-magenta">Creație Originală Hand-Made</span>
+                        <h3 class="font-cinzel text-2xl sm:text-3xl font-bold text-slate-100 mt-1">Jachetă Denim "Galaxia Scorpio"</h3>
+                    </div>
+
+                    <!-- Interactive Day/Night Toggle Button -->
+                    <div class="p-4 rounded-2xl bg-space-900 border border-space-700 space-y-3">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center justify-between">
+                            <span>Comută Lumina (Day vs Night)</span>
+                            <i data-lucide="sun-moon" class="w-4 h-4 text-starlight-gold"></i>
+                        </label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="btnDayView" onclick="setHeroJacketMode('day')" class="py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-starlight-cyan text-space-950 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="sun" class="w-4 h-4"></i>
+                                <span>Lumina Zilei</span>
+                            </button>
+                            <button id="btnNightView" onclick="setHeroJacketMode('night')" class="py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-space-800 text-slate-400 hover:text-starlight-glow transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="moon" class="w-4 h-4"></i>
+                                <span>Noaptea (Glow)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 text-sm font-light leading-relaxed">
+                        Realizată pe un spătar generos de jachetă denim cu blăniță la guler. S-au folosit nuanțe vibrante de albastru cobalt, roz magenta și stropi intenși de stardust fosforescent aplicat cu pensula fină.
+                    </p>
+
+                    <div class="space-y-2 text-xs text-slate-300 border-t border-space-700/50 pt-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Material Suport:</span>
+                            <span class="font-semibold text-slate-200">Bumbac 100% Denim Gros</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Vopsele Utilizate:</span>
+                            <span class="font-semibold text-starlight-cyan">Panduro Textile & Acrilic Elastic</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">Efect Glow:</span>
+                            <span class="font-semibold text-starlight-glow">Fosforescent (Se încarcă la lumină)</span>
+                        </div>
+                    </div>
+
+                    <a href="#order" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-starlight-magenta to-starlight-cyan text-space-950 font-bold text-center text-xs uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,42,141,0.3)]">
+                        <i data-lucide="wand-2" class="w-4 h-4"></i>
+                        <span>Solicită o Jachetă Similară</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO GALLERY SECTION -->
+        <section id="gallery" class="py-24 px-6 relative max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-starlight-cyan">Portofoliu Artistic</span>
+                    <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-slate-100 mt-2">Colecția Celestială</h2>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-space-800/80 border border-space-700/60 backdrop-blur-md">
+                    <button onclick="filterGallery('all')" class="gallery-tab active px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all bg-starlight-cyan text-space-950" data-filter="all">
+                        Toate Lucrările
+                    </button>
+                    <button onclick="filterGallery('jackets')" class="gallery-tab px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all text-slate-400 hover:text-slate-100" data-filter="jackets">
+                        Jachete Denim
+                    </button>
+                    <button onclick="filterGallery('tshirts')" class="gallery-tab px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all text-slate-400 hover:text-slate-100" data-filter="tshirts">
+                        Tricouri (T-Shirts)
+                    </button>
+                    <button onclick="filterGallery('galaxies')" class="gallery-tab px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all text-slate-400 hover:text-slate-100" data-filter="galaxies">
+                        Galaxii & Constelații
+                    </button>
+                    <button onclick="filterGallery('skies')" class="gallery-tab px-5 py-2.5 rounded-xl text-xs font-semibold tracking-wider transition-all text-slate-400 hover:text-slate-100" data-filter="skies">
+                        Apusuri & Nori
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- CARD 1: Original Scorpio Denim Jacket -->
+                <div class="gallery-item jackets galaxies card-glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openModal('scorpio')">
+                    <div class="relative aspect-[4/5] overflow-hidden bg-space-950">
+                        <img src="https://lh3.googleusercontent.com/proxy/4uE5TzF_0k_Q" alt="Original Scorpio Jacket by Camelia" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-space-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-starlight-glow/40 flex items-center gap-1.5 text-[11px] font-medium text-starlight-glow">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            <span>Glow in Dark</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between text-xs text-starlight-magenta mb-2">
+                            <span>Jachetă Denim • Piesă Inaugurală</span>
+                            <span>Scorpio</span>
+                        </div>
+                        <h3 class="font-cinzel text-xl font-bold text-slate-100 group-hover:text-starlight-cyan transition-colors">Spiral Scorpio Galaxy</h3>
+                        <p class="text-slate-400 text-sm font-light mt-2 line-clamp-2">Vortex cosmic în nuanțe de magenta și cobalt cu stropi fosforescenți de praf stelar.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 2: T-SHIRT - Sunset Clouds Heavyweight Tee -->
+                <div class="gallery-item tshirts skies card-glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openModal('tshirt_sunset')">
+                    <div class="relative aspect-[4/5] overflow-hidden bg-space-950">
+                        <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1000" alt="Tricou Heavyweight Sunset Clouds" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90">
+                        <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-space-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-starlight-gold/40 flex items-center gap-1.5 text-[11px] font-medium text-starlight-gold">
+                            <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+                            <span>Mop Brush Effect</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between text-xs text-starlight-gold mb-2">
+                            <span>Tricou Bumbac Plin (200g)</span>
+                            <span>Apus & Nori</span>
+                        </div>
+                        <h3 class="font-cinzel text-xl font-bold text-slate-100 group-hover:text-starlight-gold transition-colors">Tee "Sunset Clouds & Gold"</h3>
+                        <p class="text-slate-400 text-sm font-light mt-2 line-clamp-2">Pictură fluidă cu treceri delicate de apus pe pieptul unui tricou negru gros oversized.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 3: T-SHIRT - Cosmic Scorpio Constellation Tee -->
+                <div class="gallery-item tshirts galaxies card-glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openModal('tshirt_cosmic')">
+                    <div class="relative aspect-[4/5] overflow-hidden bg-space-950">
+                        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=1000" alt="Tricou Cosmic Zodiac" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90">
+                        <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-space-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-starlight-glow/40 flex items-center gap-1.5 text-[11px] font-medium text-starlight-glow">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            <span>Glow Constellation</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between text-xs text-starlight-cyan mb-2">
+                            <span>Tricou Custom Zodiac</span>
+                            <span>Nebuloasă</span>
+                        </div>
+                        <h3 class="font-cinzel text-xl font-bold text-slate-100 group-hover:text-starlight-cyan transition-colors">Tee "Zodiac Stardust"</h3>
+                        <p class="text-slate-400 text-sm font-light mt-2 line-clamp-2">Galaxie violet cu constelația ta personalizată realizată în pigmenți fosforescenți.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 4: Celestial Sunset Clouds Jacket Concept -->
+                <div class="gallery-item jackets skies card-glass rounded-3xl overflow-hidden group cursor-pointer" onclick="openModal('sunset')">
+                    <div class="relative aspect-[4/5] overflow-hidden bg-space-950">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000" alt="Sunset Cloudscape Concept" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90">
+                        <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-space-950/90 backdrop-blur-md px-3 py-1 rounded-full border border-starlight-gold/40 flex items-center gap-1.5 text-[11px] font-medium text-starlight-gold">
+                            <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+                            <span>Jachetă Denim</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between text-xs text-starlight-gold mb-2">
+                            <span>Jachetă Spate Lat</span>
+                            <span>Apus & Nori</span>
+                        </div>
+                        <h3 class="font-cinzel text-xl font-bold text-slate-100 group-hover:text-starlight-gold transition-colors">Jachetă "Nori Luminați"</h3>
+                        <p class="text-slate-400 text-sm font-light mt-2 line-clamp-2">Degradeuri fluide de apus cu treceri realizate prin tehnica estompării cu pensulă mop.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SPECIAL T-SHIRTS FEATURE HIGHLIGHT SECTION -->
+        <section id="tshirts" class="py-20 px-6 relative max-w-7xl mx-auto border-t border-space-700/40">
+            <div class="card-glass rounded-3xl p-8 sm:p-12 relative overflow-hidden bg-gradient-to-r from-space-900 via-space-800 to-space-950">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <span class="px-3.5 py-1.5 rounded-full border border-starlight-gold/40 bg-space-950/80 text-xs font-semibold text-starlight-gold uppercase tracking-widest inline-flex items-center gap-2">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Linia de Tricouri Hand-Painted</span>
+                        </span>
+                        <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-slate-100">
+                            Arta Cosmică Pe Tricouri Din Bumbac Plin
+                        </h2>
+                        <p class="text-slate-300 font-light text-sm leading-relaxed">
+                            Fiecare tricou este pregătit pe bumbac gros de 200g/m² (Heavyweight Cotton) cu carton interior rigid pentru stabilitate. Se folosesc straturi speciale de bază albe și culori flexibile Panduro care rezistă excelent la spălări delicate.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs text-slate-300 font-medium">
+                            <div class="p-3 rounded-xl bg-space-950/60 border border-space-700/60 flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-starlight-glow"></i>
+                                <span>Bumbac Gros (Heavyweight)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-space-950/60 border border-space-700/60 flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-starlight-cyan"></i>
+                                <span>Fixat la Cald (Iron-Set)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-space-950/60 border border-space-700/60 flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-starlight-magenta"></i>
+                                <span>Constelație Glow la Alegere</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-sm aspect-[4/5] rounded-2xl overflow-hidden border border-starlight-cyan/30 shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1000" alt="Heavyweight Tee Showcase" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-space-950 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 text-center">
+                                <span class="font-cinzel text-xs text-starlight-glow tracking-widest uppercase bg-space-950/90 px-4 py-2 rounded-full border border-starlight-glow/40 inline-block">
+                                    ✦ Tricou Custom Heavyweight
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CUSTOM ORDER REQUEST BUILDER -->
+        <section id="order" class="py-24 px-6 relative max-w-5xl mx-auto">
+            <div class="text-center space-y-4 mb-16">
+                <span class="text-xs font-semibold uppercase tracking-widest text-starlight-gold">Comandă Custom</span>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-slate-100">Creează-ți Propria Jachetă sau Tricou</h2>
+                <p class="text-slate-400 text-sm max-w-lg mx-auto font-light">
+                    Alege suportul textil, nuanțele celestiale și constelația zodiilor tale pentru o piesă creată exclusiv pentru tine.
+                </p>
+            </div>
+
+            <div class="card-glass rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+                <form id="orderForm" onsubmit="handleFormSubmit(event)" class="space-y-8">
+                    
+                    <!-- Garment Selection -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-starlight-cyan mb-3">1. Alege Suportul Textil</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <label class="garment-option cursor-pointer p-4 rounded-2xl border border-space-700 bg-space-800/50 hover:border-starlight-magenta transition-all flex flex-col items-center text-center gap-2">
+                                <input type="radio" name="garment" value="Jachetă Blug (Denim)" class="sr-only" checked onclick="updateEstimator()">
+                                <i data-lucide="shirt" class="w-6 h-6 text-starlight-magenta"></i>
+                                <span class="font-medium text-sm text-slate-200">Jachetă Denim Spate</span>
+                                <span class="text-xs text-slate-400">Pânză mare & rigidă</span>
+                            </label>
+
+                            <label class="garment-option cursor-pointer p-4 rounded-2xl border border-space-700 bg-space-800/50 hover:border-starlight-cyan transition-all flex flex-col items-center text-center gap-2">
+                                <input type="radio" name="garment" value="Tricou Heavyweight Cotton" class="sr-only" onclick="updateEstimator()">
+                                <i data-lucide="shirt" class="w-6 h-6 text-starlight-cyan"></i>
+                                <span class="font-medium text-sm text-slate-200">Tricou Heavyweight (200g)</span>
+                                <span class="text-xs text-slate-400">Bumbac gros & lejer</span>
+                            </label>
+
+                            <label class="garment-option cursor-pointer p-4 rounded-2xl border border-space-700 bg-space-800/50 hover:border-starlight-gold transition-all flex flex-col items-center text-center gap-2">
+                                <input type="radio" name="garment" value="Haina Ta Proprie" class="sr-only" onclick="updateEstimator()">
+                                <i data-lucide="package" class="w-6 h-6 text-starlight-gold"></i>
+                                <span class="font-medium text-sm text-slate-200">Trimiți Haina Ta</span>
+                                <span class="text-xs text-slate-400">Pictăm pe piesa ta</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Theme & Zodiac Glow -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-starlight-magenta mb-2">2. Tema Cosmică</label>
+                            <select name="theme" id="themeSelect" onchange="updateEstimator()" class="w-full px-4 py-3 rounded-xl bg-space-800/80 border border-space-700 text-sm text-slate-200 focus:outline-none focus:border-starlight-cyan">
+                                <option value="Galaxie Spirală & Constelație">Galaxie Spirală & Constelație Scorpio</option>
+                                <option value="Apus cu Nori Diafani">Apus Eteric & Nori (Tehnica Mop)</option>
+                                <option value="Geometrie Sacră & Mandala">Geometrie Sacră & Mandala Cosmică</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-starlight-glow mb-2">3. Constelația Ta Glow in Dark</label>
+                            <input type="text" name="zodiac" placeholder="Ex: Scorpio, Aries, Leo, Taurus..." class="w-full px-4 py-3 rounded-xl bg-space-800/80 border border-space-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-starlight-glow">
+                        </div>
+                    </div>
+
+                    <!-- Live Estimator Box -->
+                    <div class="p-4 rounded-2xl bg-space-950/80 border border-starlight-cyan/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-starlight-glow"></i>
+                            <div>
+                                <span class="text-xs text-slate-400 block">Estimare Timp & Detalii:</span>
+                                <span id="estimateText" class="text-xs font-semibold text-slate-200">Tricou Bumbac • ~3-5 Zile Lucru</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-starlight-glow bg-space-800 px-3 py-1.5 rounded-full border border-starlight-glow/30">
+                            ✦ Pigmenți Fosforescenți Incluși
+                        </span>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Numele Tău</label>
+                            <input type="text" required placeholder="Numele tău" class="w-full px-4 py-3 rounded-xl bg-space-800/80 border border-space-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-starlight-cyan">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Email</label>
+                            <input type="email" required placeholder="nume@example.com" class="w-full px-4 py-3 rounded-xl bg-space-800/80 border border-space-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-starlight-cyan">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Mesaj sau Detalii Speciale</label>
+                        <textarea rows="3" placeholder="Menționează culorile preferate, dimensiunea (S, M, L, XL) sau alte idei..." class="w-full px-4 py-3 rounded-xl bg-space-800/80 border border-space-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-starlight-cyan"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-starlight-cyan via-starlight-magenta to-starlight-glow text-space-950 font-bold text-xs uppercase tracking-widest hover:opacity-95 transition-all shadow-[0_0_25px_rgba(0,210,255,0.3)]">
+                        Trimite Solicitarea Custom către Camelia
+                    </button>
+                </form>
+
+                <!-- Feedback Toast -->
+                <div id="formSuccessMessage" class="hidden absolute inset-0 bg-space-950/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-starlight-glow/20 border border-starlight-glow flex items-center justify-center text-starlight-glow">
+                        <i data-lucide="check" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-cinzel text-2xl font-bold text-slate-100">Mulțumesc! Solicitarea a fost trimisă!</h3>
+                    <p class="text-slate-300 text-sm max-w-md">Voi reveni cu un mesaj pe email pentru a discuta detaliile schiței tale celestiale.</p>
+                    <button onclick="resetOrderForm()" class="px-6 py-2 rounded-full border border-space-700 text-xs font-semibold text-slate-300 hover:text-white">Trimite Altă Idee</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-space-700/50 py-12 px-6 relative z-10 bg-space-950">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+            <div class="flex items-center gap-3">
+                <span class="font-cinzel text-sm font-bold text-starlight-cyan">ARTWEAR STUDIO BY CAMELIA</span>
+                <span>• Wearable Art</span>
+            </div>
+            <p>© 2026 Artwear studio by Camelia. All rights reserved.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-starlight-magenta transition-colors">Instagram</a>
+                <a href="#" class="hover:text-starlight-glow transition-colors">TikTok</a>
+                <a href="#" class="hover:text-starlight-gold transition-colors">Pinterest</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL LIGHTBOX -->
+    <div id="artModal" class="fixed inset-0 z-50 hidden bg-space-950/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="relative w-full max-w-3xl card-glass rounded-3xl overflow-hidden shadow-2xl my-auto">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-space-900/80 border border-space-700 flex items-center justify-center text-slate-300 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <div class="relative aspect-square bg-space-950 flex items-center justify-center overflow-hidden">
+                    <img id="modalImage" src="" alt="Art detail" class="w-full h-full object-cover">
+                </div>
+
+                <div class="p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <span id="modalCategory" class="text-xs font-semibold uppercase tracking-wider text-starlight-magenta"></span>
+                        <h3 id="modalTitle" class="font-cinzel text-2xl font-bold text-slate-100"></h3>
+                        <p id="modalDescription" class="text-slate-300 text-sm font-light leading-relaxed"></p>
+                    </div>
+
+                    <a href="#order" onclick="closeModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-starlight-cyan to-starlight-magenta text-space-950 font-bold text-center text-xs uppercase tracking-wider">
+                        Solicită Model Similar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Modal Details Dictionary
+        const artDetails = {
+            scorpio: {
+                title: "Spiral Scorpio Galaxy",
+                category: "Jachetă Denim • Piesă Inaugurală by Camelia",
+                image: "https://lh3.googleusercontent.com/proxy/4uE5TzF_0k_Q",
+                description: "Prima mea creație hand-painted pe o jachetă din denim cu blăniță. Nuanțele de roz magenta și albastru cobalt creează o nebuloasă spirală adâncă, peste care am aplicat constelația Scorpio cu efect fosforescent glow in the dark."
+            },
+            tshirt_sunset: {
+                title: "Tee Sunset Clouds & Gold",
+                category: "Tricou Heavyweight (200g) • Bumbac Plin",
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1000",
+                description: "Tricou din bumbac plin de culoare neagră, pictat cu tehnica estompării cu pensulă mop. Redă tranziții fine de apus cald, nori diafani și accente aurii."
+            },
+            tshirt_cosmic: {
+                title: "Tee Zodiac Stardust",
+                category: "Tricou Custom Zodiac • Glow in Dark",
+                image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&q=80&w=1000",
+                description: "Pictură pe tricou cu nebuloză violet și constelația zodiilor aplicată în vopsea fosforescentă ce luminează la întuneric."
+            },
+            sunset: {
+                title: "Jachetă Nori Luminați",
+                category: "Jachetă Denim • Apus & Nori",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000",
+                description: "Studiu de apus vioriu pe spatele unei jachete din blug, realizat cu ajutorul pensulelor mop pentru blending lin."
+            }
+        };
+
+        function updateEstimator() {
+            const garments = document.getElementsByName('garment');
+            let selectedGarment = 'Jachetă Blug (Denim)';
+            for (const g of garments) {
+                if (g.checked) selectedGarment = g.value;
+            }
+            const estimateText = document.getElementById('estimateText');
+            if (selectedGarment.includes('Tricou')) {
+                estimateText.innerText = 'Tricou Heavyweight Cotton • ~3-4 Zile Lucru (Bumbac 200g)';
+            } else if (selectedGarment.includes('Jachetă')) {
+                estimateText.innerText = 'Jachetă Denim Spate Lat • ~4-6 Zile Lucru (Pânză Densă)';
+            } else {
+                estimateText.innerText = 'Haină Personală Trimisă • ~3-5 Zile de la Primire';
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.alpha += star.speed;
+                if (star.alpha > 1 || star.alpha < 0) {
+                    star.speed = -star.speed;
+                }
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, Math.min(1, star.alpha));
+                ctx.fillStyle = star.color;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        drawStars();
+
+        // Hero Jacket Day / Night Toggle
+        function setHeroJacketMode(mode) {
+            const overlay = document.getElementById('heroGlowOverlay');
+            const modeDot = document.getElementById('heroModeDot');
+            const modeLabel = document.getElementById('heroModeLabel');
+            const btnDay = document.getElementById('btnDayView');
+            const btnNight = document.getElementById('btnNightView');
+
+            if (mode === 'night') {
+                overlay.style.opacity = '1';
+                modeDot.className = 'w-2.5 h-2.5 rounded-full bg-starlight-glow animate-pulse';
+                modeLabel.innerText = 'Modul Noapte (Glow in the Dark)';
+                
+                btnNight.className = 'py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-starlight-glow text-space-950 transition-all flex items-center justify-center gap-2';
+                btnDay.className = 'py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-space-800 text-slate-400 hover:text-starlight-cyan transition-all flex items-center justify-center gap-2';
+            } else {
+                overlay.style.opacity = '0';
+                modeDot.className = 'w-2.5 h-2.5 rounded-full bg-starlight-cyan';
+                modeLabel.innerText = 'Modul Zi (Lumină)';
+
+                btnDay.className = 'py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-starlight-cyan text-space-950 transition-all flex items-center justify-center gap-2';
+                btnNight.className = 'py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-space-800 text-slate-400 hover:text-starlight-glow transition-all flex items-center justify-center gap-2';
+            }
+        }
+
+        // Gallery Filter
+        function filterGallery(category) {
+            const tabs = document.querySelectorAll('.gallery-tab');
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-filter') === category) {
+                    tab.classList.add('bg-starlight-cyan', 'text-space-950');
+                    tab.classList.remove('text-slate-400');
+                } else {
+                    tab.classList.remove('bg-starlight-cyan', 'text-space-950');
+                    tab.classList.add('text-slate-400');
+                }
+            });
+
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal Details
+        const artDetails = {
+            scorpio: {
+                title: "Spiral Scorpio Galaxy",
+                category: "Jachetă Denim • Piesă Inaugurală by Camelia",
+                image: "https://lh3.googleusercontent.com/proxy/4uE5TzF_0k_Q",
+                description: "Prima mea creație hand-painted pe o jachetă din denim cu blăniță. Nuanțele de roz magenta și albastru cobalt creează o nebuloasă spirală adâncă, peste care am aplicat constelația Scorpio cu efect fosforescent glow in the dark."
+            },
+            sunset: {
+                title: "Nori Luminați din Spate",
+                category: "Apus & Nori (Tehnica Mop)",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000",
+                description: "Studiu de apus vioriu cu nori diafani realizat cu ajutorul pensulelor mop pentru estompare fină."
+            },
+            nebula: {
+                title: "Vortex Stardust Violet",
+                category: "Hanorac Plin",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1000",
+                description: "Piesa realizată pe bumbac plin cu stropi intenși de stardust fosforescent."
+            }
+        };
+
+        function openModal(id) {
+            const data = artDetails[id];
+            if (!data) return;
+
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalCategory').innerText = data.category;
+            document.getElementById('modalDescription').innerText = data.description;
+            document.getElementById('modalImage').src = data.image;
+            document.getElementById('artModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('artModal').classList.add('hidden');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            document.getElementById('formSuccessMessage').classList.remove('hidden');
+        }
+
+        function resetOrderForm() {
+            document.getElementById('orderForm').reset();
+            document.getElementById('formSuccessMessage').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
